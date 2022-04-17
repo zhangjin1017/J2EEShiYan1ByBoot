@@ -1,0 +1,13 @@
+
+${AnsiColor.BRIGHT_MAGENTA}                                   ███████████ █████                                             █████  ███
+${AnsiColor.BRIGHT_MAGENTA}                                  ▒█▒▒▒▒▒▒███ ▒▒███                                             ▒▒███  ▒▒▒
+${AnsiColor.BRIGHT_MAGENTA}                                  ▒     ███▒   ▒███████    ██████   ████████    ███████          ▒███  ████  ████████
+${AnsiColor.BRIGHT_MAGENTA}                                       ███     ▒███▒▒███  ▒▒▒▒▒███ ▒▒███▒▒███  ███▒▒███          ▒███ ▒▒███ ▒▒███▒▒███
+${AnsiColor.BRIGHT_MAGENTA}                                      ███      ▒███ ▒███   ███████  ▒███ ▒███ ▒███ ▒███          ▒███  ▒███  ▒███ ▒███
+${AnsiColor.BRIGHT_MAGENTA}                                    ████     █ ▒███ ▒███  ███▒▒███  ▒███ ▒███ ▒███ ▒███    ███   ▒███  ▒███  ▒███ ▒███
+${AnsiColor.BRIGHT_MAGENTA}                                   ███████████ ████ █████▒▒████████ ████ █████▒▒███████   ▒▒████████   █████ ████ █████
+${AnsiColor.BRIGHT_MAGENTA}                                  ▒▒▒▒▒▒▒▒▒▒▒ ▒▒▒▒ ▒▒▒▒▒  ▒▒▒▒▒▒▒▒ ▒▒▒▒ ▒▒▒▒▒  ▒▒▒▒▒███    ▒▒▒▒▒▒▒▒   ▒▒▒▒▒ ▒▒▒▒ ▒▒▒▒▒
+${AnsiColor.BRIGHT_MAGENTA}                                                                               ███ ▒███
+${AnsiColor.BRIGHT_MAGENTA}                                                                              ▒▒██████
+${AnsiColor.BRIGHT_MAGENTA}                                                                               ▒▒▒▒▒▒
+${AnsiColor.BRIGHT_GREEN}                                                                  当前 Spring Boot 版本：${spring-boot.version}

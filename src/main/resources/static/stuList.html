@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生信息</title>
+    <script src="js/vue.js"></script>
+    <script src="axios-0.19.2/dist/axios.min.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.zhimg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.zhimg.com/element-ui/lib/index.js"></script>
+
+</head>
+
+<body>
+    <div id="app">
+        <template>
+            <el-button style="float: right" size="mini" type="primary" @click="addDialogVisible = true">添加</el-button>
+            <el-table v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading"
+                element-loading-background="rgba(0, 0, 0, 0.8)" :data="tableData" style="width: 100%">
+                <el-table-column prop="id" label="ID" width="100">
+                </el-table-column>
+                <el-table-column prop="name" label="姓名">
+                </el-table-column>
+                <el-table-column prop="age" label="年龄">
+                </el-table-column>
+                <el-table-column prop="gender" label="性别">
+                </el-table-column>
+                <el-table-column prop="place" label="籍贯">
+                </el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+
+                        <el-button size="mini" @click="edit(scope.$index, scope.row)">编辑</el-button>
+                        <el-button size="mini" type="danger" @click="del(scope.$index, scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </template>
+        <!-- add -->
+        <el-dialog title="添加学生信息" :visible.sync="addDialogVisible" width="30%">
+            <!-- 内容主体区 -->
+            <el-form :model="addUserForm" label-width="100px">
+                <el-form-item label="姓名" prop="name" required>
+                    <!-- prop是验证规则属性 -->
+                    <el-input v-model="addUserForm.name"></el-input>
+                </el-form-item>
+                <el-form-item label="年龄" prop="age" required>
+                    <el-input v-model="addUserForm.age"></el-input>
+                </el-form-item>
+                <el-form-item label="性别" prop="gender" required>
+                    <el-input v-model="addUserForm.gender"></el-input>
+                </el-form-item>
+                <el-form-item label="籍贯" prop="place" required>
+                    <el-input v-model="addUserForm.place"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="addDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="add">确 定</el-button>
+            </span>
+        </el-dialog>
+        <!-- add-end -->
+        <!-- edit -->
+        <el-dialog title="修改学生信息" :visible.sync="editDialogVisible" width="30%">
+            <!-- 内容主体区 -->
+            <el-form :model="editUserForm" label-width="100px">
+                <el-form-item label="姓名" prop="name" required>
+                    <!-- prop是验证规则属性 -->
+                    <el-input v-model="editUserForm.name"></el-input>
+                </el-form-item>
+                <el-form-item label="年龄" prop="age" required>
+                    <el-input v-model="editUserForm.age"></el-input>
+                </el-form-item>
+                <el-form-item label="性别" prop="gender" required>
+                    <el-input v-model="editUserForm.gender"></el-input>
+                </el-form-item>
+                <el-form-item label="籍贯" prop="place" required>
+                    <el-input v-model="editUserForm.place"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="editCommit">确 定</el-button>
+            </span>
+        </el-dialog>
+        <!-- edit-end -->
+    </div>
+
+    <script>
+        new Vue({
+            el: "#app",
+            data: {
+                loading: true,
+                tableData: [],
+                addDialogVisible: false, //控制添加用户对话框的显示与隐藏
+                addUserForm: {
+                    name: '',
+                    age: '',
+                    gender: '',
+                    place: ''
+                },
+                editDialogVisible: false, //控制修改用户对话框的显示与隐藏
+                editUserForm: {
+                    id: '',
+                    name: '',
+                    age: '',
+                    gender: '',
+                    place: ''
+                },
+            },
+
+            methods: {
+                getAllStudent() {
+                    axios.get("http://localhost:8080/student/getAllStudent")
+                        .then(res => {
+                            if (res.data.data != null) {
+                                this.tableData = res.data.data;
+                                this.loading = false;
+                            } else {
+                                console.log(res.data.reason);
+                            }
+                        })
+                },
+
+                del(index, row) {
+                    console.log(index, row)
+
+                    this.$confirm('此操作将永久删除该学生信息, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        const params = new URLSearchParams();
+                        params.append('id', row.id);
+                        axios.post("http://localhost:8080/student/deleteStudent", params)
+                            .then(res => {
+                                if (res.data.data != null) {
+                                    this.$message({
+                                        type: 'success',
+                                        message: '删除' + res.data.data.name + '成功!'
+                                    });
+                                    //方法1
+                                    // this.getAllStudent();
+                                    //方法2
+                                    // location.reload();
+                                    //方法3
+                                    this.tableData.splice(index, 1);
+
+                                } else {
+                                    console.log(res.data.reason);
+                                }
+                            })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+
+                },
+                add() {
+                    this.addDialogVisible = false;
+                    console.log(this.addUserForm);
+                    const student = new URLSearchParams();
+                    student.append('name', this.addUserForm.name);
+                    student.append('age', this.addUserForm.age);
+                    student.append('gender', this.addUserForm.gender);
+                    student.append('place', this.addUserForm.place);
+                    axios.post("http://localhost:8080/student/addStudent", student)
+                        .then(res => {
+                            if (res.data.data != null) {
+                                this.tableData.push(res.data.data);
+                                this.$message({
+                                    type: 'success',
+                                    message: '添加' + res.data.data.name + '成功!'
+                                });
+                                this.addUserForm = {
+                                    id: '',
+                                    name: '',
+                                    age: '',
+                                    gender: '',
+                                    place: ''
+                                }
+                            } else {
+                                console.log(res.data.reason);
+                            }
+                        })
+
+                },
+                edit(index, row) {
+                    this.editDialogVisible = true;
+                    this.editUserForm = {
+                        id: row.id,
+                        name: row.name,
+                        age: row.age,
+                        gender: row.gender,
+                        place: row.place
+                    }
+                },
+                editCommit() {
+
+                    console.log(this.editUserForm);
+                    const student = new URLSearchParams();
+                    student.append('id', this.editUserForm.id);
+                    student.append('name', this.editUserForm.name);
+                    student.append('age', this.editUserForm.age);
+                    student.append('gender', this.editUserForm.gender);
+                    student.append('place', this.editUserForm.place);
+                    axios.post("http://localhost:8080/student/updateStudent", student)
+                        .then(res => {
+                            if (res.data.data != null) {
+                                this.tableData.push(res.data.data);
+                                this.$message({
+                                    type: 'success',
+                                    message: '修改' + this.editUserForm.name + '成功!'
+                                });
+                                this.tableData = res.data.data;
+                                this.editUserForm = {
+                                    id: '',
+                                    name: '',
+                                    age: '',
+                                    gender: '',
+                                    place: ''
+                                }
+                                this.editDialogVisible = false;
+                            } else {
+                                console.log(res.data.reason);
+                            }
+                        })
+
+                }
+            },
+            mounted: function () {
+                console.log("挂载完成");
+                this.getAllStudent();
+
+            }
+        })
+
+    </script>
+</body>
+
+</html>
